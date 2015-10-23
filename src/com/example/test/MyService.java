@@ -3,18 +3,18 @@ package com.example.test;
 import org.vnp.androidvirtualkeypad.R;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 public class MyService extends Service {
@@ -73,15 +73,25 @@ public class MyService extends Service {
 	}
 
 	private void startBack() {
-		// ActivityManager am = (ActivityManager) this
-		// .getSystemService(ACTIVITY_SERVICE);
-		// List<ActivityManager.RunningTaskInfo> taskInfo =
-		// am.getRunningTasks(1);
-		// ComponentName componentInfo = taskInfo.get(0).topActivity;
-		//
-		// componentInfo.getPackageName();
-
+		String keyCommand = "input keyevent " + KeyEvent.KEYCODE_BACK;
+		try {
+			Runtime runtime = Runtime.getRuntime();
 		
+			Process process = runtime.exec(keyCommand);
+		} catch (Exception e) {
+		}
+
+		// new Thread() {
+		// @Override
+		// public void run() {
+		// try {
+		// Instrumentation inst = new Instrumentation();
+		// inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+		// } catch (Exception e) {
+		// Log.e("AAAAAAAAAAAAAAAAAS", "s", e);
+		// }
+		// }
+		// }.start();
 
 	}
 
