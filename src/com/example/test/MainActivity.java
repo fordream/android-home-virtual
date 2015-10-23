@@ -2,8 +2,8 @@ package com.example.test;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import me.leolin.shortcutbadger.ShortcutBadger;
+import org.vnp.androidvirtualkeypad.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
