@@ -2,6 +2,7 @@ package com.example.test;
 
 import org.vnp.androidvirtualkeypad.R;
 
+import android.app.Instrumentation;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -66,32 +67,31 @@ public class MyService extends Service {
 		params.gravity = Gravity.TOP | Gravity.LEFT;
 		params.x = (windowManager.getDefaultDisplay().getWidth() - layout
 				.getWidth()) / 2;
-		params.x = getResources().getDimensionPixelSize(R.dimen.dimen_135dp);
+		params.x = getResources().getDimensionPixelSize(R.dimen.dimen_100dp);
 		params.y = getResources().getDimensionPixelSize(R.dimen.dimen_0dp);
 
 		windowManager.addView(layout, params);
 	}
 
 	private void startBack() {
-		String keyCommand = "input keyevent " + KeyEvent.KEYCODE_BACK;
-		try {
-			Runtime runtime = Runtime.getRuntime();
-		
-			Process process = runtime.exec(keyCommand);
-		} catch (Exception e) {
-		}
+//		String keyCommand = "input keyevent " + KeyEvent.KEYCODE_BACK;
+//		try {
+//			Runtime runtime = Runtime.getRuntime();
+//			Process process = runtime.exec(keyCommand);
+//		} catch (Exception e) {
+//		}
 
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// try {
-		// Instrumentation inst = new Instrumentation();
-		// inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-		// } catch (Exception e) {
-		// Log.e("AAAAAAAAAAAAAAAAAS", "s", e);
-		// }
-		// }
-		// }.start();
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					Instrumentation inst = new Instrumentation();
+					inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+				} catch (Exception e) {
+					Log.e("AAAAAAAAAAAAAAAAAS", "s", e);
+				}
+			}
+		}.start();
 
 	}
 
