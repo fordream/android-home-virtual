@@ -24,9 +24,13 @@ import android.widget.LinearLayout;
 
 public class MyService extends Service {
 
+	public enum MyServiceType {//
+		create, //
+		delete, //
+	}//
+
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -36,8 +40,14 @@ public class MyService extends Service {
 		return super.onStartCommand(intent, flags, startId);
 	}
 
-	private void create() {
+	private WindowManager windowManager;
+	private LinearLayout layout;
+	private WindowManager.LayoutParams params;
 
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 		OnClickListener clickListener = new OnClickListener() {
 
 			@Override
@@ -51,68 +61,67 @@ public class MyService extends Service {
 				}
 			}
 		};
-		WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.main_notif_mail, null);
+		layout = (LinearLayout) inflater
+				.inflate(R.layout.main_notif_mail, null);
 
 		layout.findViewById(R.id.back).setOnClickListener(clickListener);
 		layout.findViewById(R.id.home).setOnClickListener(clickListener);
 		layout.findViewById(R.id.btn_home).setOnClickListener(clickListener);
 
-		WindowManager.LayoutParams params = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+		params = new WindowManager.LayoutParams(
+				WindowManager.LayoutParams.WRAP_CONTENT,
+				WindowManager.LayoutParams.WRAP_CONTENT,
+				WindowManager.LayoutParams.TYPE_PHONE,
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+				PixelFormat.TRANSLUCENT);
 
 		params.gravity = Gravity.TOP | Gravity.LEFT;
-		params.x = (windowManager.getDefaultDisplay().getWidth() - layout.getWidth()) / 2;
+		params.x = (windowManager.getDefaultDisplay().getWidth() - layout
+				.getWidth()) / 2;
 		params.x = getResources().getDimensionPixelSize(R.dimen.dimen_100dp);
 		params.y = getResources().getDimensionPixelSize(R.dimen.dimen_0dp);
+	}
 
-		windowManager.addView(layout, params);
+	private void create() {
+		try {
+			windowManager.addView(layout, params);
+		} catch (Exception exception) {
+			windowManager.removeView(layout);
+		}
 	}
 
 	private void startBack() {
-		// String keyCommand = "input keyevent " + KeyEvent.KEYCODE_BACK;
-		// try {
-		// Runtime runtime = Runtime.getRuntime();
-		// Process process = runtime.exec(keyCommand);
-		// } catch (Exception e) {
-		// }
-
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// try {
-		// Instrumentation inst = new Instrumentation();
-		// inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-		// } catch (Exception e) {
-		// Log.e("AAAAAAAAAAAAAAAAAS", "s", e);
-		// }
-		// }
-		// }.start();
 
 		Activity activity = getActivity();
-		Log.e("AAAAAAAAAAAAAAAAAS", "activity : " + (activity == null));
 		if (activity != null) {
-			Log.e("AAAAAAAAAAAAAAAAAS", "activity : " + activity.getClass().getSimpleName());
+			Log.e("AAAAAAAAAAAAAAAAAS", "activity : "
+					+ activity.getClass().getSimpleName());
 		}
 	}
 
 	public static Activity getActivity() {
 		try {
-			Class activityThreadClass = Class.forName("android.app.ActivityThread");
-			Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-			Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
+			Class activityThreadClass = Class
+					.forName("android.app.ActivityThread");
+			Object activityThread = activityThreadClass.getMethod(
+					"currentActivityThread").invoke(null);
+			Field activitiesField = activityThreadClass
+					.getDeclaredField("mActivities");
 			activitiesField.setAccessible(true);
 			HashMap activities = (HashMap) activitiesField.get(activityThread);
 			for (Object activityRecord : activities.values()) {
 				Class activityRecordClass = activityRecord.getClass();
-				Field pausedField = activityRecordClass.getDeclaredField("paused");
+				Field pausedField = activityRecordClass
+						.getDeclaredField("paused");
 				pausedField.setAccessible(true);
 				if (!pausedField.getBoolean(activityRecord)) {
-					Field activityField = activityRecordClass.getDeclaredField("activity");
+					Field activityField = activityRecordClass
+							.getDeclaredField("activity");
 					activityField.setAccessible(true);
-					Activity activity = (Activity) activityField.get(activityRecord);
+					Activity activity = (Activity) activityField
+							.get(activityRecord);
 					return activity;
 				}
 			}
@@ -133,8 +142,12 @@ public class MyService extends Service {
 	private String getLauncher() {
 		String launcher = "com.android.launcher";
 		final PackageManager packageManager = getPackageManager();
-		for (final ResolveInfo resolveInfo : packageManager.queryIntentActivities(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), PackageManager.MATCH_DEFAULT_ONLY)) {
-			if (resolveInfo.activityInfo.packageName.contains("launcher") || resolveInfo.activityInfo.packageName.contains("android")) {
+		for (final ResolveInfo resolveInfo : packageManager
+				.queryIntentActivities(new Intent(Intent.ACTION_MAIN)
+						.addCategory(Intent.CATEGORY_HOME),
+						PackageManager.MATCH_DEFAULT_ONLY)) {
+			if (resolveInfo.activityInfo.packageName.contains("launcher")
+					|| resolveInfo.activityInfo.packageName.contains("android")) {
 				launcher = resolveInfo.activityInfo.packageName;
 			}
 		}
