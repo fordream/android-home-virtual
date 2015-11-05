@@ -2,8 +2,9 @@ package com.example.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import me.leolin.shortcutbadger.ShortcutBadger;
+
 import org.vnp.androidvirtualkeypad.R;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,7 +18,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		ShortcutBadger.with(this).count(1);
+		//ShortcutBadger.with(this).count(1);
 		
 		startService(new Intent(this,MyService.class));
 		homes();
